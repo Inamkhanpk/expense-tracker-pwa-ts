@@ -1,26 +1,42 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import { Header } from './components/Header';
+import { Balance } from './components/Balance';
+import { IncomeAndExpense } from './components/IncomeAndExpense';
+//import  { Footer } from './components/Footer'
+ import { GlobalProvider } from './contextAPI/GlobalState';
+import { BuyAndSellItemList } from './components/BuyAndSellItemList';
+import { AddBuyandSellItems } from './components/AddBuyandSellItems';
+import { firebase } from "./services/firebaseService";
+import './App.css'
 function App() {
+  const firebaseMessaging = () => {
+    const messaging = firebase.messaging();
+    messaging.requestPermission().then(() => {
+      messaging.getToken().then((currentToken:any) => {
+        if (currentToken) {
+          console.log("Token:", currentToken);
+        } else {
+          console.log('No Instance ID token available. Request permission to generate one.');
+        }
+      }).catch((err:any) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+    })
+  }
+  firebaseMessaging();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <GlobalProvider>
+      <Header/>
+    <div >
+     <Balance/>
+     <IncomeAndExpense/>
+     <BuyAndSellItemList/>
+     <AddBuyandSellItems/>
+     </div>
+    {/* <Footer/> */}
+    
+    </GlobalProvider>
   );
-}
+  }
 
 export default App;
